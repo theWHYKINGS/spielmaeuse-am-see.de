@@ -26,7 +26,7 @@
     <meta property="og:url" content="https://www.spielmaeuse-am-see.de/">
     <meta name="twitter:card" content="summary_large_image">
     <!-- /injected-head -->
-    <link rel="stylesheet" href="vendor/fonts-local.css">
+  <link rel="stylesheet" href="vendor/fonts-local.css">
   <link rel="stylesheet" href="vendor/leaflet.css">
   <script src="vendor/leaflet.js"></script>
   <script src="./event-data.js"></script>
@@ -423,14 +423,15 @@ class Component extends DCLogic {
     const stripes = ['#A9DDE7', '#F4C965', '#A8C6A0', '#E58D78'];
     const families = famsRaw.map((f, i) => ({
       name: f.name,
-      detail: (f.adults != null && f.kids != null) ? f.adults + ' Große und ' + f.kids + ' kleine Mäuse' : null,
+      detail: (f.adults != null && f.kids != null) ? f.adults + ' Erw., ' + f.kids + (f.kids === 1 ? ' Kind' : ' Kinder') : null,
       bg: f.placeholder ? 'rgba(255,248,236,.6)' : '#FFF8EC',
       stripe: f.placeholder ? '#d8d2c4' : stripes[i % stripes.length]
     }));
     const confirmed = famsRaw.filter(f => !f.placeholder);
     const totalKids = confirmed.reduce((s, f) => s + (f.kids || 0), 0);
+    const totalAdults = confirmed.reduce((s, f) => s + (f.adults || 0), 0);
     const familySummary = totalKids > 0
-      ? confirmed.length + ' Familien, ' + totalKids + ' Kinder, ein gemeinsamer Seetag'
+      ? confirmed.length + ' Familien, ' + totalAdults + ' Erwachsene, ' + totalKids + ' Kinder – ein gemeinsamer Seetag'
       : confirmed.length + (confirmed.length === 1 ? ' Familie ist' : ' Familien sind') + ' schon dabei – die Liste wächst';
     const schedule = (window.SCHEDULE || []).map((s, i, a) => ({
       ...s, notLast: i < a.length - 1,

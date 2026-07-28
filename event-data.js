@@ -28,15 +28,9 @@ window.SCHEDULE = [
 ];
 
 window.FAMILIES = [
-  { name: "Familie Candar/Sesselmann", adults: null, kids: null },
-  { name: "Familie Gudd", adults: null, kids: null },
-  { name: "Familie Haselbauer", adults: null, kids: null },
-  { name: "Familie Heinz", adults: null, kids: null },
-  { name: "Familie Henke", adults: null, kids: null },
-  { name: "Familie Käsbauer/Müffling", adults: null, kids: null },
-  { name: "Familie Lefere", adults: null, kids: null },
-  { name: "Familie Marshall/Mostert", adults: null, kids: null },
-  { name: "Familie Reichert", adults: null, kids: null }
+  { name: "Familie Candar/Sesselmann", adults: 1, kids: 1 },
+  { name: "Familie Marshall/Mostert", adults: 2, kids: 1 },
+  { name: "Familie Reichert", adults: 2, kids: 1 }
 ];
 
 window.CONTRIBUTIONS = [
