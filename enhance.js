@@ -8,8 +8,11 @@
  *
  * Both POST to a Google-Apps-Script web app (backend/Code.gs) that stores the
  * entry in a Google Sheet, e-mails Dominik, and serves all entries back via GET
- * so every family sees the live list. The design's own lists (window.FAMILIES /
- * window.CONTRIBUTIONS) stay as the seed; site sign-ups appear below them.
+ * so every family sees the live list. Site sign-ups are inserted DIRECTLY into
+ * the design's own lists — a picnic item into its category's <ul>, a RSVP as a
+ * family card — in the native styling, so they look pre-sorted rather than tacked
+ * on. Entries already curated into the seed (window.FAMILIES / window.CONTRIBUTIONS
+ * in event-data.js) are de-duplicated so nothing shows twice.
  *
  * The deploy pipeline re-injects <script src="enhance.js"> after each pull
  * (scripts/inject_enhance.py), so this survives design updates.
@@ -64,6 +67,69 @@
     var set = {};
     try { (window.FAMILIES || []).forEach(function (f) { set[norm(f.name)] = 1; }); } catch (e) {}
     return set;
+  }
+
+  // ---- locate the design's rendered lists so we can insert into them ----
+  var STRIPES = [C.coral, C.yellow, C.mint, C.blue, C.teal];
+
+  // map category label -> its group <div> in the picnic list (skip our own form)
+  function picknickGroups() {
+    var sec = document.getElementById('picknickdecke');
+    var mine = document.getElementById('sm-picknick');
+    var map = {};
+    if (!sec) return map;
+    sec.querySelectorAll('h3').forEach(function (h3) {
+      if (mine && mine.contains(h3)) return;
+      var label = (h3.textContent || '').trim();
+      if (label && !map[label]) map[label] = h3.parentElement;
+    });
+    return map;
+  }
+
+  // the flex-wrap container holding the family cards in #wer-ist-dabei
+  function familyContainer() {
+    var sec = document.getElementById('wer-ist-dabei');
+    var mine = document.getElementById('sm-rsvp');
+    if (!sec) return null;
+    var names = {};
+    try { (window.FAMILIES || []).forEach(function (f) { names[norm(f.name)] = 1; }); } catch (e) {}
+    var found = null;
+    sec.querySelectorAll('div').forEach(function (d) {
+      if (found || (mine && mine.contains(d))) return;
+      if (names[norm((d.textContent || '').trim())]) found = d.parentElement;
+    });
+    if (found) return found;
+    // fallback: a flex-wrap container that isn't our form
+    sec.querySelectorAll('div').forEach(function (d) {
+      if (found || (mine && mine.contains(d))) return;
+      if (/flex-wrap/.test(d.getAttribute('style') || '') && d.children.length) found = d;
+    });
+    return found;
+  }
+
+  function picknickLi(e) {
+    var li = document.createElement('li');
+    li.className = 'sm-inj';
+    li.setAttribute('style', 'background:' + C.cream + ';border-radius:14px;padding:14px 18px;box-shadow:rgba(47,102,114,.07) 0 2px 10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px');
+    var h = '<span style="font-weight:800;font-size:16.5px;color:' + C.ink + '">' + esc(e.what) + '</span>';
+    if (e.amount) h += '<span style="font-size:15px;color:' + C.muted + '">' + esc(e.amount) + '</span>';
+    if (e.note) h += '<span style="font-size:14px;font-style:italic;color:' + C.muted + '">' + esc(e.note) + '</span>';
+    if (e.family) h += '<span style="margin-left:auto;font-size:14.5px;font-weight:700;color:' + C.teal + ';background:rgba(169,221,231,.4);padding:4px 12px;border-radius:999px">' + esc(e.family) + '</span>';
+    li.innerHTML = h;
+    return li;
+  }
+
+  function familyCard(e, i) {
+    var div = document.createElement('div');
+    div.className = 'sm-inj';
+    div.setAttribute('style', 'background:' + C.cream + ';border-radius:14px 14px 18px 18px;padding:16px 22px 14px;box-shadow:rgba(47,102,114,.1) 0 3px 12px;display:flex;flex-direction:column;gap:4px;min-width:150px;border-top:6px solid ' + STRIPES[i % STRIPES.length]);
+    var h = '<span style="font-family:\'Baloo 2\',sans-serif;font-weight:600;font-size:18px;color:' + C.teal + '">' + esc(e.family) + '</span>';
+    var det = [];
+    if (e.adults) det.push(e.adults + ' Erw.');
+    if (e.kids) det.push(e.kids + ' Kind' + (String(e.kids) === '1' ? '' : 'er'));
+    if (det.length) h += '<span style="font-size:14px;color:' + C.muted + '">' + esc(det.join(', ')) + '</span>';
+    div.innerHTML = h;
+    return div;
   }
 
   // ---- styles (scoped with the sm- prefix) ----
@@ -147,8 +213,6 @@
       '<div class="sm-field"><label>Kinder</label><input id="sm-rsvp-kids" inputmode="numeric" maxlength="2" placeholder="1"></div>' +
       '</div>' +
       '<div class="sm-actions"><button class="sm-btn" id="sm-rsvp-btn">Wir sind dabei</button><span class="sm-msg" id="sm-rsvp-msg"></span></div>' +
-      '<div class="sm-live-head" id="sm-rsvp-live-head" style="display:none">Über die Seite dazugekommen</div>' +
-      '<div class="sm-live" id="sm-rsvp-live"></div>' +
       '</div>');
     sec.appendChild(card);
     var fam = card.querySelector('#sm-rsvp-family');
@@ -167,19 +231,22 @@
     });
   }
 
+  // insert live RSVPs straight into the design's family-card row
   function renderRsvp(list) {
-    var box = document.getElementById('sm-rsvp-live');
-    var head = document.getElementById('sm-rsvp-live-head');
-    if (!box) return;
+    var sec = document.getElementById('wer-ist-dabei');
+    if (!sec) return;
+    sec.querySelectorAll('.sm-inj').forEach(function (n) { n.remove(); });   // idempotent
     var seed = seedFamilyKeys();
-    list = list.filter(function (e) { return !seed[norm(e.family)]; });
-    head.style.display = list.length ? '' : 'none';
-    box.innerHTML = list.map(function (e) {
-      var det = [];
-      if (e.adults) det.push(e.adults + ' Erw.');
-      if (e.kids) det.push(e.kids + ' Kind' + (String(e.kids) === '1' ? '' : 'er'));
-      return '<span class="sm-chip"><b>' + esc(e.family) + '</b>' + (det.length ? ' · ' + esc(det.join(', ')) : '') + '</span>';
-    }).join('');
+    var seen = {};
+    list = list.filter(function (e) {
+      var k = norm(e.family);
+      if (!k || seed[k] || seen[k]) return false;    // skip seed + duplicate submissions
+      seen[k] = 1; return true;
+    });
+    if (!list.length) return;
+    var cont = familyContainer();
+    if (!cont) return;
+    list.forEach(function (e, i) { cont.appendChild(familyCard(e, i)); });
   }
 
   // ---- Picknick form (#picknickdecke) ----
@@ -199,8 +266,6 @@
       '<div class="sm-field sm-wide"><label>Eure Familie</label><input id="sm-pk-family" maxlength="80" placeholder="z. B. Familie Maus" autocomplete="off"></div>' +
       '</div>' +
       '<div class="sm-actions"><button class="sm-btn" id="sm-pk-btn">Auf die Decke damit</button><span class="sm-msg" id="sm-pk-msg"></span></div>' +
-      '<div class="sm-live-head" id="sm-pk-live-head" style="display:none">Über die Seite dazugekommen</div>' +
-      '<div class="sm-live" id="sm-pk-live"></div>' +
       '</div>');
     inner.appendChild(card);
     var what = card.querySelector('#sm-pk-what');
@@ -221,21 +286,41 @@
     });
   }
 
+  // insert live picnic items straight into their category's <ul> in the design list
   function renderPicknick(list) {
-    var box = document.getElementById('sm-pk-live');
-    var head = document.getElementById('sm-pk-live-head');
-    if (!box) return;
+    var sec = document.getElementById('picknickdecke');
+    if (!sec) return;
+    sec.querySelectorAll('li.sm-inj').forEach(function (n) { n.remove(); });   // idempotent
+    // re-show any category placeholder we hid earlier (in case an entry was removed)
+    sec.querySelectorAll('[data-sm-hid]').forEach(function (n) { n.style.display = ''; n.removeAttribute('data-sm-hid'); });
+    // also drop any <ul> we created for a then-empty category but no longer need
+    sec.querySelectorAll('ul.sm-ul').forEach(function (u) { if (!u.querySelector('li')) u.remove(); });
+
     var seed = seedPicknickKeys();
-    list = list.filter(function (e) { return !seed[norm(e.what) + '|' + norm(e.family)]; });
-    head.style.display = list.length ? '' : 'none';
-    box.innerHTML = list.map(function (e) {
-      var extra = [];
-      if (e.amount) extra.push(e.amount);
-      if (e.category) extra.push(e.category);
-      var tail = e.family ? ' · ' + esc(e.family) : '';
-      return '<span class="sm-chip"><b>' + esc(e.what) + '</b>' +
-        (extra.length ? ' (' + esc(extra.join(', ')) + ')' : '') + tail + '</span>';
-    }).join('');
+    var seen = {};
+    list = list.filter(function (e) {
+      var k = norm(e.what) + '|' + norm(e.family);
+      if (seed[k] || seen[k]) return false;
+      seen[k] = 1; return true;
+    });
+    if (!list.length) return;
+
+    var groups = picknickGroups();
+    var firstCat = Object.keys(groups)[0];
+    list.forEach(function (e) {
+      var group = groups[e.category] || groups[firstCat];
+      if (!group) return;
+      var ul = group.querySelector('ul');
+      if (!ul) {   // empty category: hide its "wird noch gebraucht" note, add a list
+        var ph = group.querySelector('p');
+        if (ph) { ph.style.display = 'none'; ph.setAttribute('data-sm-hid', '1'); }
+        ul = document.createElement('ul');
+        ul.className = 'sm-ul';
+        ul.setAttribute('style', 'list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px');
+        group.appendChild(ul);
+      }
+      ul.appendChild(picknickLi(e));
+    });
   }
 
   // ---- load live entries ----
