@@ -54,11 +54,11 @@
     <form onSubmit="{{ submitPw }}" style="background: #FFFFFF; border-radius: 24px; box-shadow: 0 6px 30px rgba(47,102,114,.14); padding: 40px 32px; max-width: 380px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;">
       <img src="./uploads/Laimer-Spielmaeuse_Logo.png" alt="Laimer Spielmäuse" style="width: 74px; height: 86px; object-fit: contain;">
       <h1 style="margin: 0; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 28px; color: #2F6672;">Pssst – Mäuse-Parole?</h1>
-      <p style="margin: 0 0 6px; font-size: 15.5px; line-height: 1.5; color: #4d6167;">Diese Seite ist nur für unsere Spielmäuse-Familien. Die Parole steht in der Signal-Gruppe.</p>
+      <p style="margin: 0 0 6px; font-size: 15.5px; line-height: 1.5; color: #4d6167;">Diese Seite ist nur für unsere Spielmäuse-Familien.</p>
       <label for="pw-input" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Parole</label>
       <input id="pw-input" type="password" autocomplete="off" value="{{ pw }}" onChange="{{ onPwChange }}" placeholder="Parole eingeben" style="width: 100%; box-sizing: border-box; min-height: 48px; padding: 10px 16px; border-radius: 12px; border: 2px solid #A9DDE7; font-family: 'Nunito', sans-serif; font-size: 17px; color: #2E4145; background: #FFF8EC;">
       <sc-if value="{{ pwError }}">
-        <p style="margin: 0; font-size: 14.5px; font-weight: 700; color: #E58D78;">Hm, das war nicht die Parole – fragt kurz in der Signal-Gruppe.</p>
+        <p style="margin: 0; font-size: 14.5px; font-weight: 700; color: #E58D78;">Hm, das war nicht die Parole – probiert es nochmal.</p>
       </sc-if>
       <button type="submit" style="width: 100%; min-height: 48px; border: none; border-radius: 999px; background: #2F6672; color: #FFF8EC; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 17px; cursor: pointer;" style-hover="background: #24525c;">Rein ins Vergnügen</button>
     </form>
@@ -280,7 +280,6 @@
       </div>
     </sc-for>
   </div>
-  <p style="margin: 20px 0 0; font-size: 15px; color: #4d6167;">Ihr fehlt noch auf der Liste? Meldet euch kurz in der {{ contactLabel }}.</p>
 </section>
 
 <svg viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" style="display: block; width: 100%; height: 48px;">
@@ -311,12 +310,11 @@
             </ul>
           </sc-if>
           <sc-if value="{{ cat.isEmpty }}">
-            <p style="margin: 0; background: rgba(255,248,236,.7); border: 2px dashed #A8C6A0; border-radius: 14px; padding: 14px 18px; font-size: 15px; color: #4d6167;">Wird noch gebraucht – wer mag, meldet sich in der Signal-Gruppe.</p>
+            <p style="margin: 0; background: rgba(255,248,236,.7); border: 2px dashed #A8C6A0; border-radius: 14px; padding: 14px 18px; font-size: 15px; color: #4d6167;">Wird noch gebraucht – hier ist noch Platz für euer Mitbringsel.</p>
           </sc-if>
         </div>
       </sc-for>
     </div>
-    <p style="margin: 28px 0 0; font-size: 15px; color: #4d6167;">Änderung oder Ergänzung? Schreibt einfach in die {{ contactLabel }}.</p>
   </div>
 </section>
 
@@ -372,11 +370,14 @@ class Component extends DCLogic {
     (window.MAP_POINTS || []).forEach(pt => {
       if (pt.lat == null || pt.lng == null) return;
       const above = pt.labelPos === 'above';
-      const circle = '<div style="width:' + (pt.primary ? 40 : 30) + 'px;height:' + (pt.primary ? 40 : 30) + 'px;border-radius:50%;background:' + pt.color + ';border:3px solid #FFF8EC;box-shadow:0 2px 8px rgba(46,65,69,.35);display:flex;align-items:center;justify-content:center;font:800 ' + (pt.primary ? 15 : 11) + 'px Nunito,sans-serif;color:#2E4145">' + pt.glyph + '</div>';
+      const right = pt.labelPos === 'right';
+      const circle = '<div style="width:' + (pt.primary ? 40 : 30) + 'px;height:' + (pt.primary ? 40 : 30) + 'px;flex-shrink:0;border-radius:50%;background:' + pt.color + ';border:3px solid #FFF8EC;box-shadow:0 2px 8px rgba(46,65,69,.35);display:flex;align-items:center;justify-content:center;font:800 ' + (pt.primary ? 15 : 11) + 'px Nunito,sans-serif;color:#2E4145">' + pt.glyph + '</div>';
       const tag = '<div style="background:#FFF8EC;border-radius:6px;padding:1px 6px;font:700 11.5px Nunito,sans-serif;color:#2F6672;box-shadow:0 1px 4px rgba(46,65,69,.25);white-space:nowrap">' + pt.label + '</div>';
       const icon = L.divIcon({
         className: 'maus-marker',
-        html: '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(' + (above ? '-26px' : '-6px') + ')">' + (above ? tag + circle : circle + tag) + '</div>',
+        html: right
+          ? '<div style="display:flex;flex-direction:row;align-items:center;gap:4px;transform:translate(-15px,-15px)">' + circle + tag + '</div>'
+          : '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(' + (above ? '-26px' : '-6px') + ')">' + (above ? tag + circle : circle + tag) + '</div>',
         iconSize: [0, 0]
       });
       L.marker([pt.lat, pt.lng], { icon, alt: pt.label }).addTo(this.map)

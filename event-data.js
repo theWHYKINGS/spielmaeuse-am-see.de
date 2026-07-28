@@ -14,7 +14,7 @@ window.EVENT_DATA = {
     appleMapsUrl: null
   },
   arrivalNote: "[ANFAHRTSHINWEIS – z. B. Parken, Fußweg]",
-  weatherPlan: "Bei schlechtem Wetter entscheidet jede Familie für sich – schaut morgens kurz in die Signal-Gruppe.",
+  weatherPlan: "Bei schlechtem Wetter entscheidet jede Familie für sich. :)",
   contactLabel: "Signal-Elterngruppe",
   contactUrl: null,                 // bestätigter Link, sonst null
   mainSiteUrl: "https://www.laimer-spielmaeuse.de/",
@@ -55,8 +55,8 @@ window.CONTRIBUTIONS = [
 // lat/lng eintragen → Marker erscheint automatisch. URLs sind bestätigt.
 window.MAP_POINTS = [
   { id: "treffpunkt", label: "Unser Mäuse-Treffpunkt", glyph: "★", color: "#E58D78", primary: true, lat: 48.19911, lng: 11.42178, url: "https://maps.app.goo.gl/DqGHp4KkU9VFazPf9" },
-  { id: "parkplatz",  label: "Parkplatz Süd", glyph: "P",  color: "#2F6672", lat: 48.19284, lng: 11.42085, url: "https://maps.app.goo.gl/hnYRj4DnoZGB6NHJ9" },
-  { id: "parkplatz2", label: "Parkplatz West", glyph: "P", color: "#2F6672", labelPos: "above", lat: 48.19949, lng: 11.41303, url: "https://www.google.com/maps?q=48.19949,11.41303" },
+  { id: "parkplatz",  label: "Parkplatz Süd", glyph: "P",  color: "#2F6672", labelPos: "above", lat: 48.19284, lng: 11.42085, url: "https://maps.app.goo.gl/hnYRj4DnoZGB6NHJ9" },
+  { id: "parkplatz2", label: "Parkplatz West", glyph: "P", color: "#2F6672", labelPos: "right", lat: 48.19949, lng: 11.41303, url: "https://www.google.com/maps?q=48.19949,11.41303" },
   { id: "kiosk",      label: "Kiosk", glyph: "K", color: "#F4C965", labelPos: "above", lat: 48.20036, lng: 11.41430, url: "https://maps.app.goo.gl/K6eSJMqBrfSi4wX47" },
   { id: "toiletten",  label: "Toiletten", glyph: "WC", color: "#A8C6A0", labelPos: "above", lat: 48.20077, lng: 11.42181, url: "https://maps.app.goo.gl/b9dtb4gsLjx44iaz8" },
   { id: "toiletten2", label: "Ausweich-Toiletten", glyph: "WC", color: "#A8C6A0", lat: 48.19841, lng: 11.41268, url: "https://maps.app.goo.gl/Y7SkRWjbec4bPbdE9" },
