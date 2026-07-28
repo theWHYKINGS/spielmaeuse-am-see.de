@@ -246,6 +246,32 @@
     });
   }
 
+  // keep the "N Familien, M Erwachsene, K Kinder" summary in sync — the design
+  // computes it from window.FAMILIES only, so live sign-ups would be uncounted.
+  // Mirrors the source's format (index.html: familySummary).
+  function updateCounter(liveFams) {
+    var wd = document.getElementById('wer-ist-dabei');
+    if (!wd) return;
+    var mine = document.getElementById('sm-rsvp');
+    var p = null;
+    wd.querySelectorAll('p').forEach(function (el) {
+      if (mine && mine.contains(el)) return;
+      if (/Erwachsene|schon dabei|die Liste wächst/.test(el.textContent || '')) p = el;
+    });
+    if (!p) return;
+    var count = 0, adults = 0, kids = 0;
+    try { (window.FAMILIES || []).forEach(function (f) {
+      if (f.placeholder) return;
+      count++; adults += (+f.adults || 0); kids += (+f.kids || 0);
+    }); } catch (e) {}
+    liveFams.forEach(function (e) {
+      count++; adults += (parseInt(e.adults, 10) || 0); kids += (parseInt(e.kids, 10) || 0);
+    });
+    p.textContent = kids > 0
+      ? count + ' Familien, ' + adults + ' Erwachsene, ' + kids + ' Kinder – ein gemeinsamer Seetag'
+      : count + (count === 1 ? ' Familie ist' : ' Familien sind') + ' schon dabei – die Liste wächst';
+  }
+
   // insert live RSVPs straight into the design's family-card row
   function renderRsvp(list) {
     var sec = document.getElementById('wer-ist-dabei');
@@ -258,6 +284,7 @@
       if (!k || familyInSeed(e.family, seed) || seen[k]) return false;   // skip seed + duplicate submissions
       seen[k] = 1; return true;
     });
+    updateCounter(list);                 // count live sign-ups into the summary too
     if (!list.length) return;
     var cont = familyContainer();
     if (!cont) return;
@@ -273,7 +300,7 @@
     var card = el(
       '<div class="sm-card" id="sm-picknick">' +
       '<h3>Was bringst du mit?</h3>' +
-      '<p class="sm-sub">Trag dein Mitbringsel ein – es landet sofort auf der gemeinsamen Liste.</p>' +
+      '<p class="sm-sub">Trag deine Mitbringsel ein (mehrere Einträge möglich) – sie landen sofort auf der gemeinsamen Liste.</p>' +
       '<div class="sm-grid">' +
       '<div class="sm-field" style="flex-basis:200px"><label>Was?</label><input id="sm-pk-what" maxlength="80" placeholder="z. B. Kartoffelsalat" autocomplete="off"></div>' +
       '<div class="sm-field"><label>Menge</label><input id="sm-pk-amount" maxlength="40" placeholder="z. B. 1 Schüssel"></div>' +

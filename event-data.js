@@ -30,18 +30,24 @@ window.SCHEDULE = [
 window.FAMILIES = [
   { name: "Familie Candar/Sesselmann", adults: 1, kids: 1 },
   { name: "Familie Marshall/Mostert", adults: 2, kids: 1 },
-  { name: "Familie Reichert", adults: 2, kids: 1 }
+  { name: "Familie Reichert", adults: 2, kids: 1 },
+  { name: "Familie Haselbauer", adults: 2, kids: 1 }
 ];
 
 window.CONTRIBUTIONS = [
-  { category: "Herzhaft", items: [] },
+  { category: "Herzhaft", items: [
+    { what: "Blätterteigschnecken", amount: "20", family: "Familie Candar/Sesselmann", note: null }
+  ]},
   { category: "Süß", items: [
     { what: "Brownies", amount: "2 Bleche", family: "Familie Haselbauer", note: null },
     { what: "Muffins", amount: null, family: "Familie Haselbauer", note: null }
   ]},
-  { category: "Obst & Gemüse", items: [] },
+  { category: "Obst & Gemüse", items: [
+    { what: "Obstspieße", amount: null, family: "Familie Reichert", note: null }
+  ]},
   { category: "Getränke", items: [
-    { what: "Aperol Spritz", amount: null, family: "Familie Haselbauer", note: "für die großen Mäuse" }
+    { what: "Aperol Spritz", amount: null, family: "Familie Haselbauer", note: "für die großen Mäuse" },
+    { what: "Orangen & Apfelsaft", amount: "6 L", family: "Familie Marshall/Mostert", note: null }
   ]},
   { category: "Geschirr & Nützliches", items: [
     { what: "Musikbox", amount: null, family: "Familie Haselbauer", note: null }
