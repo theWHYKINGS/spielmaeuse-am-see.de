@@ -53,20 +53,35 @@
     return ['Herzhaft', 'Süß', 'Obst & Gemüse', 'Getränke', 'Geschirr & Nützliches'];
   }
   function norm(s) { return String(s == null ? '' : s).trim().toLowerCase(); }
+  // Family names are typed by hand, so a live entry rarely matches the seed byte
+  // for byte ("Marshall" vs "Familie Marshall/Mostert"). Normalise away the
+  // "Familie" prefix and compare on the surname parts too.
+  function famNorm(s) { return norm(s).replace(/^(familie|fam\.?)\s+/, '').trim(); }
+  function famParts(s) {
+    var n = famNorm(s);
+    var parts = n.split('/').map(function (p) { return p.trim(); }).filter(Boolean);
+    if (parts.indexOf(n) < 0) parts.push(n);
+    return parts;
+  }
   // Entries already curated into the design's seed lists (event-data.js) should
-  // not ALSO show as a live "dazugekommen" chip — dedupe the backend list
-  // against the seed so moving an item into the list makes its chip disappear.
+  // not ALSO show as a live entry — dedupe the backend list against the seed so
+  // moving something into the list makes its live copy disappear.
   function seedPicknickKeys() {
     var set = {};
     try { (window.CONTRIBUTIONS || []).forEach(function (c) {
-      (c.items || []).forEach(function (it) { set[norm(it.what) + '|' + norm(it.family)] = 1; });
+      (c.items || []).forEach(function (it) { set[norm(it.what) + '|' + famNorm(it.family)] = 1; });
     }); } catch (e) {}
     return set;
   }
   function seedFamilyKeys() {
     var set = {};
-    try { (window.FAMILIES || []).forEach(function (f) { set[norm(f.name)] = 1; }); } catch (e) {}
+    try { (window.FAMILIES || []).forEach(function (f) {
+      famParts(f.name).forEach(function (p) { set[p] = 1; });
+    }); } catch (e) {}
     return set;
+  }
+  function familyInSeed(name, seed) {
+    return famParts(name).some(function (p) { return seed[p]; });
   }
 
   // ---- locate the design's rendered lists so we can insert into them ----
@@ -239,8 +254,8 @@
     var seed = seedFamilyKeys();
     var seen = {};
     list = list.filter(function (e) {
-      var k = norm(e.family);
-      if (!k || seed[k] || seen[k]) return false;    // skip seed + duplicate submissions
+      var k = famNorm(e.family);
+      if (!k || familyInSeed(e.family, seed) || seen[k]) return false;   // skip seed + duplicate submissions
       seen[k] = 1; return true;
     });
     if (!list.length) return;
@@ -299,7 +314,7 @@
     var seed = seedPicknickKeys();
     var seen = {};
     list = list.filter(function (e) {
-      var k = norm(e.what) + '|' + norm(e.family);
+      var k = norm(e.what) + '|' + famNorm(e.family);
       if (seed[k] || seen[k]) return false;
       seen[k] = 1; return true;
     });
