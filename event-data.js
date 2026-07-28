@@ -49,7 +49,9 @@ window.CONTRIBUTIONS = [
   { category: "Getränke", items: [
     { what: "Aperol Spritz", amount: null, family: "Familie Haselbauer", note: "für die großen Mäuse" }
   ]},
-  { category: "Geschirr & Nützliches", items: [] }
+  { category: "Geschirr & Nützliches", items: [
+    { what: "Musikbox", amount: null, family: "Familie Haselbauer", note: null }
+  ]}
 ];
 
 // lat/lng eintragen → Marker erscheint automatisch. URLs sind bestätigt.

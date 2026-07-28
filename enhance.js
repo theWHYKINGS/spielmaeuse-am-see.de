@@ -49,6 +49,22 @@
     } catch (e) {}
     return ['Herzhaft', 'Süß', 'Obst & Gemüse', 'Getränke', 'Geschirr & Nützliches'];
   }
+  function norm(s) { return String(s == null ? '' : s).trim().toLowerCase(); }
+  // Entries already curated into the design's seed lists (event-data.js) should
+  // not ALSO show as a live "dazugekommen" chip — dedupe the backend list
+  // against the seed so moving an item into the list makes its chip disappear.
+  function seedPicknickKeys() {
+    var set = {};
+    try { (window.CONTRIBUTIONS || []).forEach(function (c) {
+      (c.items || []).forEach(function (it) { set[norm(it.what) + '|' + norm(it.family)] = 1; });
+    }); } catch (e) {}
+    return set;
+  }
+  function seedFamilyKeys() {
+    var set = {};
+    try { (window.FAMILIES || []).forEach(function (f) { set[norm(f.name)] = 1; }); } catch (e) {}
+    return set;
+  }
 
   // ---- styles (scoped with the sm- prefix) ----
   function injectStyles() {
@@ -155,6 +171,8 @@
     var box = document.getElementById('sm-rsvp-live');
     var head = document.getElementById('sm-rsvp-live-head');
     if (!box) return;
+    var seed = seedFamilyKeys();
+    list = list.filter(function (e) { return !seed[norm(e.family)]; });
     head.style.display = list.length ? '' : 'none';
     box.innerHTML = list.map(function (e) {
       var det = [];
@@ -207,6 +225,8 @@
     var box = document.getElementById('sm-pk-live');
     var head = document.getElementById('sm-pk-live-head');
     if (!box) return;
+    var seed = seedPicknickKeys();
+    list = list.filter(function (e) { return !seed[norm(e.what) + '|' + norm(e.family)]; });
     head.style.display = list.length ? '' : 'none';
     box.innerHTML = list.map(function (e) {
       var extra = [];
