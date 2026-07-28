@@ -20,7 +20,7 @@
   // ==== Config ====
   // Filled in once the Apps Script web app is deployed (its /exec URL). Until
   // then inject_enhance.py leaves this script out, so the live site stays clean.
-  var BACKEND_URL = 'https://script.google.com/macros/s/AKfycby29NjszPiwmjDW_Y5TNKi8FLg2x9FcSqwKHEATf7qe9hFZr_mMHCVAinjiX8t5yHl6/exec';
+  var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbzmNxTAV_2et2q0iUTpa9PHlDws7IbNuQoevoBkOTMkfQh2_07VSCv--7VVQsdEKLXw/exec';
   var SHARED_TOKEN = 'SPIELMAEUSE_2026';   // must match SHARED_TOKEN in backend/Code.gs
   // Local end-to-end testing points this at a mock server.
   try { if (window.SM_BACKEND) BACKEND_URL = window.SM_BACKEND; } catch (e) {}
