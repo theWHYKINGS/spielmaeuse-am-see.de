@@ -69,9 +69,16 @@
   function seedPicknickKeys() {
     var set = {};
     try { (window.CONTRIBUTIONS || []).forEach(function (c) {
-      (c.items || []).forEach(function (it) { set[norm(it.what) + '|' + famNorm(it.family)] = 1; });
+      (c.items || []).forEach(function (it) {
+        var w = norm(it.what);
+        famParts(it.family).forEach(function (p) { set[w + '|' + p] = 1; });   // fuzzy on family
+      });
     }); } catch (e) {}
     return set;
+  }
+  function picknickInSeed(e, seed) {
+    var w = norm(e.what);
+    return famParts(e.family).some(function (p) { return seed[w + '|' + p]; });
   }
   function seedFamilyKeys() {
     var set = {};
@@ -341,9 +348,9 @@
     var seed = seedPicknickKeys();
     var seen = {};
     list = list.filter(function (e) {
-      var k = norm(e.what) + '|' + famNorm(e.family);
-      if (seed[k] || seen[k]) return false;
-      seen[k] = 1; return true;
+      var sk = norm(e.what) + '|' + famNorm(e.family);
+      if (picknickInSeed(e, seed) || seen[sk]) return false;
+      seen[sk] = 1; return true;
     });
     if (!list.length) return;
 
