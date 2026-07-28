@@ -24,6 +24,8 @@ echo "Pointing fonts + React/Babel + Leaflet at local copies…"
 python3 scripts/localize_assets.py
 echo "Injecting lang / favicon / meta…"
 python3 scripts/inject_head.py
+echo "Wiring the forms (enhance.js, only once the backend URL is set)…"
+python3 scripts/inject_enhance.py
 
 if [ -z "$(git status --porcelain)" ]; then
   echo "Nothing changed — working tree is clean. Nothing to deploy."
