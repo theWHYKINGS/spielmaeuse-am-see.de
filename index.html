@@ -67,18 +67,51 @@
 
 <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ true }}">
 <nav aria-label="Seiten-Navigation" style="position: sticky; top: 12px; z-index: 900; padding: 0 16px;">
-  <div style="max-width: 1040px; margin: 0 auto; padding: 8px 10px 8px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: rgba(255,255,255,.88); backdrop-filter: blur(10px); border-radius: 999px; box-shadow: 0 6px 24px rgba(47,102,114,.14), 0 1px 0 rgba(255,255,255,.8) inset; border: 1px solid rgba(169,221,231,.5);">
-    <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #2F6672; min-height: 44px;">
-      <img src="./uploads/Laimer-Spielmaeuse_Logo.png" alt="" style="width: 34px; height: 40px; object-fit: contain;">
-      <span style="font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 18px;">Spielmäuse am See</span>
-    </a>
-    <div style="display: flex; gap: 2px; flex-wrap: wrap; align-items: center;">
-      <a href="#wann-wo" style="text-decoration: none; font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px;" style-hover="background: rgba(169,221,231,.45);"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 50%; background: #F4C965;"></span>Wann &amp; wo</a>
-      <a href="#unser-tag" style="text-decoration: none; font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px;" style-hover="background: rgba(169,221,231,.45);"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 50%; background: #A9DDE7;"></span>Unser Tag</a>
-      <a href="#wer-ist-dabei" style="text-decoration: none; font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px;" style-hover="background: rgba(169,221,231,.45);"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 50%; background: #A8C6A0;"></span>Wer ist dabei?</a>
-      <a href="#picknickdecke" style="text-decoration: none; font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px;" style-hover="background: rgba(169,221,231,.45);"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 50%; background: #E58D78;"></span>Picknickdecke</a>
+  <sc-if value="{{ navWide }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width: 1040px; margin: 0 auto; padding: 8px 10px 8px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: rgba(255,255,255,.88); backdrop-filter: blur(10px); border-radius: 999px; box-shadow: 0 6px 24px rgba(47,102,114,.14), 0 1px 0 rgba(255,255,255,.8) inset; border: 1px solid rgba(169,221,231,.5);">
+      <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #2F6672; min-height: 44px;">
+        <img src="./uploads/Laimer-Spielmaeuse_Logo.png" alt="" style="width: 34px; height: 40px; object-fit: contain;">
+        <span style="font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 18px;">Spielmäuse am See</span>
+      </a>
+      <div style="display: flex; gap: 2px; align-items: center;">
+        <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="4">
+          <a href="{{ l.href }}" style="text-decoration: none; font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;" style-hover="background: rgba(169,221,231,.45);"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 50%; background: {{ l.dot }};"></span>{{ l.label }}</a>
+        </sc-for>
+      </div>
     </div>
-  </div>
+  </sc-if>
+  <sc-if value="{{ navNarrow }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width: 460px; margin: 0 auto; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-radius: 30px; box-shadow: 0 6px 24px rgba(47,102,114,.16), 0 1px 0 rgba(255,255,255,.8) inset; border: 1px solid rgba(169,221,231,.5); overflow: hidden;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 7px 7px 16px;">
+        <a href="#top" onClick="{{ closeMenu }}" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #2F6672; min-height: 44px;">
+          <img src="./uploads/Laimer-Spielmaeuse_Logo.png" alt="" style="width: 30px; height: 36px; object-fit: contain;">
+          <span style="font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 17px;">Spielmäuse am See</span>
+        </a>
+        <button type="button" onClick="{{ toggleMenu }}" aria-expanded="{{ menuOpen }}" aria-label="Menü" style="width: 46px; height: 46px; flex-shrink: 0; border: none; border-radius: 50%; background: #2F6672; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0;" style-hover="background: #24525c;">
+          <sc-if value="{{ menuClosed }}" hint-placeholder-val="{{ true }}">
+            <span aria-hidden="true" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+              <span style="width: 18px; height: 2.5px; border-radius: 2px; background: #FFF8EC;"></span>
+              <span style="width: 18px; height: 2.5px; border-radius: 2px; background: #FFF8EC;"></span>
+              <span style="width: 12px; height: 2.5px; border-radius: 2px; background: #F4C965;"></span>
+            </span>
+          </sc-if>
+          <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+            <span aria-hidden="true" style="position: relative; width: 18px; height: 18px; display: inline-block;">
+              <span style="position: absolute; top: 8px; left: 0; width: 18px; height: 2.5px; border-radius: 2px; background: #FFF8EC; transform: rotate(45deg);"></span>
+              <span style="position: absolute; top: 8px; left: 0; width: 18px; height: 2.5px; border-radius: 2px; background: #FFF8EC; transform: rotate(-45deg);"></span>
+            </span>
+          </sc-if>
+        </button>
+      </div>
+      <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px 12px; border-top: 1.5px dashed rgba(169,221,231,.8);">
+          <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="4">
+            <a href="{{ l.href }}" onClick="{{ closeMenu }}" style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 12px; border-radius: 16px; text-decoration: none; font-weight: 800; font-size: 16.5px; color: #2F6672;" style-hover="background: rgba(169,221,231,.35);" style-active="background: rgba(169,221,231,.55);"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; background: {{ l.dot }}; flex-shrink: 0;"></span>{{ l.label }}</a>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
 </nav>
 
 <header id="top" style="max-width: 1080px; margin: 0 auto; padding: 48px 20px 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 40px;">
@@ -354,7 +387,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;countdownAnzeigen&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Hero&quot;}, &quot;familienZaehler&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Familien&quot;}}">
 class Component extends DCLogic {
-  state = { dataReady: !!window.EVENT_DATA, pw: '', pwError: false, unlocked: localStorage.getItem('spielmaeuse_see_unlocked') === '1' };
+  state = { dataReady: !!window.EVENT_DATA, pw: '', pwError: false, unlocked: localStorage.getItem('spielmaeuse_see_unlocked') === '1', navNarrow: window.innerWidth < 880, menuOpen: false };
   mapRef = (el) => { this.mapEl = el; this.initMap(); };
 
   componentDidMount() {
@@ -363,8 +396,13 @@ class Component extends DCLogic {
       this.initMap();
       if (this.map && this.state.dataReady) clearInterval(this.poll);
     }, 150);
+    this.onResize = () => {
+      const navNarrow = window.innerWidth < 880;
+      if (navNarrow !== this.state.navNarrow) this.setState({ navNarrow, menuOpen: false });
+    };
+    window.addEventListener('resize', this.onResize);
   }
-  componentWillUnmount() { clearInterval(this.poll); if (this.map) { this.map.remove(); this.map = null; } }
+  componentWillUnmount() { clearInterval(this.poll); window.removeEventListener('resize', this.onResize); if (this.map) { this.map.remove(); this.map = null; } }
 
   initMap() {
     if (this.map || !this.mapEl || !window.L || !window.EVENT_DATA) return;
@@ -470,6 +508,16 @@ class Component extends DCLogic {
       familySummary, families, schedule, contributions, mapPoints,
       noExactPins: !(window.MAP_POINTS || []).some(p => p.lat != null),
       mapRef: this.mapRef,
+      navLinks: [
+        { href: '#wann-wo', label: 'Wann & wo', dot: '#F4C965' },
+        { href: '#unser-tag', label: 'Unser Tag', dot: '#A9DDE7' },
+        { href: '#wer-ist-dabei', label: 'Wer ist dabei?', dot: '#A8C6A0' },
+        { href: '#picknickdecke', label: 'Picknickdecke', dot: '#E58D78' }
+      ],
+      navNarrow: this.state.navNarrow, navWide: !this.state.navNarrow,
+      menuOpen: this.state.menuOpen, menuClosed: !this.state.menuOpen,
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
       locked: !this.state.unlocked, unlocked: this.state.unlocked,
       pw: this.state.pw, pwError: this.state.pwError,
       onPwChange: this.onPwChange, submitPw: this.submitPw
