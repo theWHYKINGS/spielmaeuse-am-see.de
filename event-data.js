@@ -32,13 +32,16 @@ window.FAMILIES = [
   { name: "Familie Marshall/Mostert", adults: 2, kids: 1 },
   { name: "Familie Reichert", adults: 2, kids: 1 },
   { name: "Familie Haselbauer", adults: 2, kids: 1 },
-  { name: "Familie Sibler", adults: 2, kids: 2 }
+  { name: "Familie Sibler", adults: 2, kids: 2 },
+  { name: "Familie Riedel", adults: 1, kids: 1 },
+  { name: "Familie Henke", adults: 2, kids: 2 }
 ];
 
 window.CONTRIBUTIONS = [
   { category: "Herzhaft", items: [
     { what: "Blätterteigschnecken", amount: "20", family: "Familie Candar/Sesselmann", note: null },
-    { what: "Nudelsalat", amount: "1 Schüssel", family: "Familie Sibler", note: null }
+    { what: "Nudelsalat", amount: "1 Schüssel", family: "Familie Sibler", note: null },
+    { what: "Brezn u. Obazdn", amount: "10/10", family: "Familie Riedel", note: null }
   ]},
   { category: "Süß", items: [
     { what: "Brownies", amount: "2 Bleche", family: "Familie Haselbauer", note: null },
@@ -50,7 +53,8 @@ window.CONTRIBUTIONS = [
   { category: "Getränke", items: [
     { what: "Aperol Spritz", amount: null, family: "Familie Haselbauer", note: "für die großen Mäuse" },
     { what: "Orangen & Apfelsaft", amount: "6 L", family: "Familie Marshall/Mostert", note: null },
-    { what: "2 Sixpack Bier", amount: null, family: "Familie Reichert", note: null }
+    { what: "2 Sixpack Bier", amount: null, family: "Familie Reichert", note: null },
+    { what: "Alkfree Bier", amount: null, family: "Familie Riedel", note: null }
   ]},
   { category: "Geschirr & Nützliches", items: [
     { what: "Musikbox", amount: null, family: "Familie Haselbauer", note: null }

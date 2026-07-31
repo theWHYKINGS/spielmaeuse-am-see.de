@@ -468,7 +468,7 @@ class Component extends DCLogic {
     const famsRaw = window.FAMILIES || [];
     const stripes = ['#A9DDE7', '#F4C965', '#A8C6A0', '#E58D78', '#C9B8E8', '#F2A9C4', '#8FCFC0', '#E8B98F', '#B5D46F'];
     const famColor = {};
-    famsRaw.forEach((f, i) => { famColor[f.name] = stripes[i % stripes.length]; });
+    famsRaw.forEach((f, i) => { famColor[(f.name || '').trim()] = stripes[i % stripes.length]; });
     const families = famsRaw.map((f) => ({
       name: f.name,
       detail: (f.adults != null && f.kids != null) ? f.adults + ' Erw., ' + f.kids + (f.kids === 1 ? ' Kind' : ' Kinder') : null,
