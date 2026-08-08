@@ -187,6 +187,15 @@
       '@media (max-width:640px){',
       '  #fotos div[style*="grid"]{grid-template-columns:repeat(auto-fill,minmax(148px,1fr))!important;grid-auto-rows:auto!important;gap:8px!important}',
       '  #fotos div[style*="grid"]>button{grid-column:auto!important;grid-row:auto!important;aspect-ratio:1/1;height:auto!important}',
+      // Photo lightbox: the design uses 64px side padding, so the photo only gets
+      // ~247px of a 375px screen (wide dark bars). On phones reclaim that space so
+      // the photo is nearly full-width; keep the prev/next arrows at the sides but
+      // smaller and tucked to the very edge (semi-transparent, overlaying the edge).
+      '  [role="dialog"][aria-label="Foto-Großansicht"]{padding:12px 4px 18px!important}',
+      '  [role="dialog"][aria-label="Foto-Großansicht"]>img{max-height:78vh!important}',
+      '  [role="dialog"][aria-label="Foto-Großansicht"]>button[aria-label="Vorheriges Foto"],[role="dialog"][aria-label="Foto-Großansicht"]>button[aria-label="Nächstes Foto"]{width:42px!important;height:42px!important;background:rgba(36,82,92,.55)!important}',
+      '  [role="dialog"][aria-label="Foto-Großansicht"]>button[aria-label="Vorheriges Foto"]{left:3px!important}',
+      '  [role="dialog"][aria-label="Foto-Großansicht"]>button[aria-label="Nächstes Foto"]{right:3px!important}',
       '}'
     ].join('');
     var s = document.createElement('style');
