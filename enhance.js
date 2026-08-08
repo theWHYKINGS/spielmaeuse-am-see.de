@@ -180,7 +180,14 @@
       '.sm-chip{background:' + C.cream + ';border:2px solid ' + C.blue + ';border-radius:14px;padding:9px 14px;',
       '  font-family:"Nunito",sans-serif;font-size:14.5px;color:' + C.ink + '}',
       '.sm-chip b{font-family:"Baloo 2",sans-serif;font-weight:600;color:' + C.teal + '}',
-      '.sm-live-head{margin:22px 0 2px;font-family:"Baloo 2",sans-serif;font-weight:600;font-size:15px;color:' + C.teal + '}'
+      '.sm-live-head{margin:22px 0 2px;font-family:"Baloo 2",sans-serif;font-weight:600;font-size:15px;color:' + C.teal + '}',
+      // On phones the design gallery is a desktop mosaic (tiles span 2 cols/rows,
+      // fixed 150px rows) which looks uneven in the ~2 columns that fit. Flatten
+      // it to a clean, uniform square grid; spans and fixed row height overridden.
+      '@media (max-width:640px){',
+      '  #fotos div[style*="grid"]{grid-template-columns:repeat(auto-fill,minmax(148px,1fr))!important;grid-auto-rows:auto!important;gap:8px!important}',
+      '  #fotos div[style*="grid"]>button{grid-column:auto!important;grid-row:auto!important;aspect-ratio:1/1;height:auto!important}',
+      '}'
     ].join('');
     var s = document.createElement('style');
     s.id = 'sm-enhance-styles';
