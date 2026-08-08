@@ -30,9 +30,18 @@ hardcode. Current dependency set:
 - `event-data.js` — all event content (date, treffpunkt, schedule, families,
   picnic list, map markers, and the gate password)
 - `uploads/Laimer-Spielmaeuse_Logo.png` — logo + favicon
+- **Photo gallery** — `window.GALLERY` in event-data.js: 65 photos, each
+  `{thumb:"fotos/vorschau/NN.jpg", full:"uploads/…jpg", name}`. The code bundle
+  does NOT carry images — pull them separately and **batch** them (a single
+  ~180 MB bundle OOMs the tab): one `sm_thumbs.json` for the 65 thumbs (~11 MB),
+  then the 65 originals (~168 MB) in chunks of ~13 → `sm_full_0.json`..`sm_full_4.json`.
+  Unpack all into the repo (paths are already repo-relative). Repo is ~180 MB with
+  the gallery — OK for GitHub Pages, but the push takes a minute. Thumbs are
+  `loading="lazy"` (off-screen `naturalWidth` 0 = lazy-load, not broken).
 
-The `uploads/` folder also holds two 5.9 MB lake overview PNGs and a screenshot
-that the design does **not** reference — skip them (keep the repo lean).
+The `uploads/` folder also holds two 5.9 MB lake overview PNGs and old screenshots
+that the design does **not** reference — skip them (only pull GALLERY-referenced
+uploads + the logo).
 
 Bundle prefix is **`sm_`** (`sm_code.json` / `sm_images.json`) so it never mixes
 with `wk_` (main), `ak_` (Academy), `cm_` (CMON) in ~/Downloads.
